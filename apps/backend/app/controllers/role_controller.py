@@ -1,15 +1,18 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from app.schemas.role_schema import RoleCreate
 from app.services import role_service
-from fastapi import Depends
 from app.security.dependencies import get_current_user
 
-router = APIRouter()
+router = APIRouter(
+    dependencies=[Depends(get_current_user)]
+)
 
 
 @router.post("/roles")
-def create_role(role: RoleCreate):
+def create_role(
+    role: RoleCreate
+):
 
     role_id = role_service.create_role(role)
 
@@ -17,6 +20,7 @@ def create_role(role: RoleCreate):
 
 
 @router.get("/roles")
-def list_roles():
+def list_roles(
+):
 
     return role_service.list_roles()

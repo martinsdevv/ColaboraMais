@@ -27,24 +27,28 @@ def create_ticket(ticket):
     return ticket_id
 
 
-def list_tickets():
+def list_tickets(status=None, department=None, author=None):
+
     conn = get_connection()
 
-    rows = conn.execute(
-        "SELECT id, title, description, status FROM tickets"
-    ).fetchall()
+    query = "SELECT * FROM tickets WHERE 1=1"
+    params = []
 
-    return [
-        Ticket(
-            id=row["id"],
-            title=row["title"],
-            description=row["description"],
-            author_id=None,
-            department_target_id=None,
-            status=row["status"],
-        )
-        for row in rows
-    ]
+    if status:
+        query += " AND status = ?"
+        params.append(status)
+
+    if department:
+        query += " AND department_target_id = ?"
+        params.append(department)
+
+    if author:
+        query += " AND author_id = ?"
+        params.append(author)
+
+    rows = conn.execute(query, params).fetchall()
+
+    return rows
 
 def update_ticket_status(ticket_id: int, status: str):
 
@@ -60,3 +64,17 @@ def update_ticket_status(ticket_id: int, status: str):
     )
 
     conn.commit()
+
+def count_open_tickets():
+
+    conn = get_connection()
+
+    row = conn.execute(
+        """
+        SELECT COUNT(*) as total
+        FROM tickets
+        WHERE status != 'CONCLUIDO'
+        """
+    ).fetchone()
+
+    return row["total"]

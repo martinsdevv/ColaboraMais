@@ -2,6 +2,7 @@ import hashlib
 
 from app.repositories import user_repository
 from app.security.auth import create_access_token
+from app.services import audit_service
 
 
 def hash_password(password: str):
@@ -22,5 +23,12 @@ def login(email: str, password: str):
         return None
 
     token = create_access_token(user["id"])
+
+    audit_service.log_action(
+        user["id"],
+        "LOGIN",
+        "user",
+        user["id"]
+    )
 
     return token

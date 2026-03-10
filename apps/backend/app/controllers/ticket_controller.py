@@ -5,7 +5,9 @@ from app.services import ticket_service
 from fastapi import Depends
 from app.security.dependencies import get_current_user
 
-router = APIRouter()
+router = APIRouter(
+    dependencies=[Depends(get_current_user)]
+)
 
 
 @router.post("/tickets")
@@ -16,14 +18,18 @@ def create_ticket(ticket: TicketCreate, user=Depends(get_current_user)):
 
 
 @router.get("/tickets")
-def list_tickets(user=Depends(get_current_user)):
-    return ticket_service.list_tickets()
+def list_tickets(
+    status: str | None = None,
+    department: int | None = None,
+    author: int | None = None
+):
+
+    return ticket_service.list_tickets(status, department, author)
 
 @router.patch("/tickets/{ticket_id}/status")
 def update_status(
     ticket_id: int,
-    data: TicketStatusUpdate,
-    user=Depends(get_current_user)
+    data: TicketStatusUpdate
 ):
 
     ticket_service.update_ticket_status(

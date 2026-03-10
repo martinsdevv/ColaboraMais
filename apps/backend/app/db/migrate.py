@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from .database import get_connection
 
-BASE_DIR = Path(__file__).resolve().parents[4]
+BASE_DIR = Path("/app")
 SQL_DIR = BASE_DIR / "infra" / "sql"
 
 
@@ -32,6 +32,7 @@ def run_migrations():
     files = sorted(os.listdir(SQL_DIR))
 
     for file in files:
+
         if file in executed:
             continue
 
