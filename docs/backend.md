@@ -1,4 +1,4 @@
-# ColaboraMais — Backend Documentation
+# ColaboraMais
 
 ## Visão Geral
 

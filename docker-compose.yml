@@ -1,20 +1,25 @@
 version: "3.9"
 
 services:
-
   backend:
     build:
       context: .
-      dockerfile: infra/docker/Dockerfile
-
+      dockerfile: infra/docker/Dockerfile.backend
     ports:
       - "8000:8000"
-
     environment:
       - DB_PATH=/data/colaboramais.db
-
     volumes:
       - ./data:/data
       - ./infra:/app/infra
-
     restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.frontend
+    ports:
+      - "5173:80" # Mapeia a porta 80 do container para a 5173 do seu PC
+    restart: unless-stopped
+    depends_on:
+      - backend

@@ -11,8 +11,15 @@ router = APIRouter(
 
 
 @router.post("/tickets")
-def create_ticket(ticket: TicketCreate, user=Depends(get_current_user)):
-    ticket_id = ticket_service.create_ticket(ticket)
+def create_ticket(
+    ticket: TicketCreate,
+    user=Depends(get_current_user)
+):
+
+    ticket_id = ticket_service.create_ticket(
+        ticket,
+        author_id=user["id"]
+    )
 
     return {"ticket_id": ticket_id}
 

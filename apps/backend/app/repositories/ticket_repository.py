@@ -1,8 +1,8 @@
 from app.db.database import get_connection
-from app.domain.ticket import Ticket
 
 
-def create_ticket(ticket):
+def create_ticket(data):
+
     conn = get_connection()
 
     cursor = conn.execute(
@@ -11,10 +11,10 @@ def create_ticket(ticket):
         VALUES (?, ?, ?, ?)
         """,
         (
-            ticket.title,
-            ticket.description,
-            ticket.author_id,
-            ticket.department_target_id,
+            data["title"],
+            data["description"],
+            data["author_id"],
+            data["department_target_id"],
         ),
     )
 
@@ -46,9 +46,14 @@ def list_tickets(status=None, department=None, author=None):
         query += " AND author_id = ?"
         params.append(author)
 
+    query += " ORDER BY created_at DESC"
+
     rows = conn.execute(query, params).fetchall()
 
+    conn.close()
+
     return rows
+
 
 def update_ticket_status(ticket_id: int, status: str):
 
@@ -65,6 +70,9 @@ def update_ticket_status(ticket_id: int, status: str):
 
     conn.commit()
 
+    conn.close()
+
+
 def count_open_tickets():
 
     conn = get_connection()
@@ -76,5 +84,7 @@ def count_open_tickets():
         WHERE status != 'CONCLUIDO'
         """
     ).fetchone()
+
+    conn.close()
 
     return row["total"]

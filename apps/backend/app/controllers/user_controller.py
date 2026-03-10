@@ -4,9 +4,7 @@ from app.schemas.user_schema import UserCreate, UserResponse
 from app.services import user_service
 from app.security.dependencies import get_current_user
 
-router = APIRouter(
-    dependencies=[Depends(get_current_user)]
-)
+router = APIRouter()
 
 
 @router.post("/users")

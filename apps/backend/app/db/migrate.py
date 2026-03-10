@@ -2,7 +2,11 @@ import os
 from pathlib import Path
 from .database import get_connection
 
-BASE_DIR = Path("/app")
+BASE_DIR = Path(__file__).resolve()
+
+while BASE_DIR.name != "ColaboraMais":
+    BASE_DIR = BASE_DIR.parent
+
 SQL_DIR = BASE_DIR / "infra" / "sql"
 
 
@@ -29,6 +33,9 @@ def run_migrations():
 
     executed = get_executed_migrations(conn)
 
+    if not SQL_DIR.exists():
+        raise Exception(f"Migrations folder not found: {SQL_DIR}")
+
     files = sorted(os.listdir(SQL_DIR))
 
     for file in files:
@@ -40,7 +47,7 @@ def run_migrations():
 
         print(f"Running migration: {file}")
 
-        with open(path) as f:
+        with open(path, "r", encoding="utf-8") as f:
             sql = f.read()
 
         conn.executescript(sql)
