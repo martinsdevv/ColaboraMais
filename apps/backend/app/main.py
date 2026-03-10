@@ -13,6 +13,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(ticket_router)
 app.include_router(department_router)
 app.include_router(user_router)
@@ -23,17 +31,15 @@ app.include_router(reply_router)
 app.include_router(metrics_router)
 app.include_router(attachment_router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 @app.on_event("startup")
 def startup():
-    run_migrations()
+    print(">>> TENTANDO RODAR MIGRACOES...")
+    try:
+        run_migrations()
+        print(">>> MIGRACOES OK!")
+    except Exception as e:
+        print(f">>> ERRO CRITICO NAS MIGRACOES: {e}")
+        # O app continua subindo mesmo se a migração falhar
 
 
 @app.get("/")

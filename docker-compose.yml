@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   backend:
     build:
@@ -10,7 +8,7 @@ services:
     environment:
       - DB_PATH=/data/colaboramais.db
     volumes:
-      - ./data:/data
+      - db_data:/data
       - ./infra:/app/infra
     restart: unless-stopped
 
@@ -19,7 +17,11 @@ services:
       context: .
       dockerfile: infra/docker/Dockerfile.frontend
     ports:
-      - "5173:80" # Mapeia a porta 80 do container para a 5173 do seu PC
+      - "5173:80"
     restart: unless-stopped
     depends_on:
       - backend
+
+# ESTA PARTE É OBRIGATÓRIA PARA O VOLUME NOMEADO FUNCIONAR
+volumes:
+  db_data:

@@ -1,4 +1,4 @@
-# ColaboraMais
+# ColaboraMais - Backend
 
 ## Visão Geral
 
