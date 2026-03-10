@@ -45,3 +45,18 @@ def list_tickets():
         )
         for row in rows
     ]
+
+def update_ticket_status(ticket_id: int, status: str):
+
+    conn = get_connection()
+
+    conn.execute(
+        """
+        UPDATE tickets
+        SET status = ?, updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+        """,
+        (status, ticket_id)
+    )
+
+    conn.commit()
